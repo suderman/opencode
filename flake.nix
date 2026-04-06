@@ -18,7 +18,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs = [pkgs.nodejs];
           shellHook = ''
-            export PATH="$PWD/node_modules/.bin:$PATH"
+            export PATH="$PATH:$PWD/node_modules/.bin"
             npm i opencode-ai
             echo "Run: opencode"
           '';

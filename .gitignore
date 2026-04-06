@@ -1,0 +1,66 @@
+# Ignore everything by default
+*
+
+# Keep repo metadata / docs
+!.gitignore
+!README.md
+
+# Keep main config files
+!config.json
+!config.jsonc
+!opencode.json
+!opencode.jsonc
+
+# Keep human-authored config directories
+!agents/
+!agents/**
+!commands/
+!commands/**
+!prompts/
+!prompts/**
+!plugins/
+!plugins/**
+
+# Never publish local overrides / secrets
+.env
+.env.*
+!.env.example
+*.local.json
+*.local.jsonc
+*.local.yaml
+*.local.yml
+*.secret
+*.secrets
+secrets/
+private/
+
+# Never publish keys / certs / credential-like files
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.#*
+
+# Direnv / local shell env
+.direnv/
+
+# Local plugin build / dependency junk
+plugins/**/node_modules/
+plugins/**/.cache/
+plugins/**/.turbo/
+plugins/**/.next/
+plugins/**/dist/
+plugins/**/build/
+plugins/**/coverage/
+plugins/**/.env
+plugins/**/.env.*
+!plugins/**/.env.example
