@@ -1,0 +1,74 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "autoshare": false,
+  "autoupdate": true,
+
+  "model": "{env:MINIMAX_MODEL}",
+
+  "provider": {
+    "opencode": {
+      "options": {
+        "apiKey": "{env:ZEN_API_KEY}"
+      }
+    },
+    "openrouter": {
+      "options": {
+        "apiKey": "{env:OPENROUTER_API_KEY}"
+      }
+    },
+    "minimax": {
+      "options": {
+        "apiKey": "{env:MINIMAX_API_KEY}"
+      }
+    }
+  },
+
+  "permission": {
+    "bash": {
+      "*": "ask",
+      "git status*": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "rg *": "allow",
+      "grep *": "allow",
+      "find *": "allow",
+      "ls *": "allow",
+      "cat *": "allow",
+      "nix eval*": "allow",
+      "git push*": "ask",
+      "*nixos-rebuild*": "deny"
+    }
+  },
+
+  "mcp": {
+
+    "chrome-devtools": {
+      "enabled": true,
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "chrome-devtools-mcp@latest",
+        "--autoConnect",
+        "--no-usage-statistics"
+      ]
+    },
+
+    "context7": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
+      }
+    },
+
+    "gh_grep": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://mcp.grep.app"
+    }
+  }
+
+}
