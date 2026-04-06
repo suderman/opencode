@@ -1,0 +1,59 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "explore": {
+      "mode": "subagent",
+      "model": "{env:OPENCODE_SUBAGENT_MODEL}"
+    },
+    "general": {
+      "mode": "subagent",
+      "model": "{env:OPENCODE_SUBAGENT_MODEL}"
+    }
+  },
+  "autoshare": false,
+  "autoupdate": false,
+  "keybinds": {
+    "editor_open": "ctrl+o,<leader>e",
+    "input_newline": "shift+return,alt+return",
+    "model_list": "ctrl+j",
+    "session_list": "ctrl+k"
+  },
+  "mcp": {
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "exa": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://mcp.exa.ai/mcp?exaApiKey={file:/run/user/1000/agenix/smithery}"
+    },
+    "gh_grep": {
+      "type": "remote",
+      "url": "https://mcp.grep.app"
+    }
+  },
+  "model": "{env:OPENCODE_MODEL}",
+  "permission": {
+    "bash": {
+      "curl": "allow",
+      "git commit": "ask",
+      "git push": "ask",
+      "nix eval": "allow",
+      "nixos-rebuild": "deny"
+    }
+  },
+  "provider": {
+    "opencode": {
+      "options": {
+        "apiKey": "{file:/run/user/1000/agenix/zen}"
+      }
+    },
+    "openrouter": {
+      "options": {
+        "apiKey": "{file:/run/user/1000/agenix/openrouter}"
+      }
+    }
+  },
+  "theme": "stylix"
+}
