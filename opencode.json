@@ -43,6 +43,7 @@
 
   "plugin": [
     "opencode-minimax-easy-vision",
+    "@simonwjackson/opencode-direnv",
     "@slkiser/opencode-quota"
   ],
 
