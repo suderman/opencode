@@ -1,0 +1,5 @@
+{
+  "models": ["minimax-coding-plan/*", "minimax-token-plan/*", "minimax/*", "z-ai/*"],
+  "imageAnalysisTool": "mcp_minimax_understand_image",
+  "promptTemplate": "I'm attaching {imageCount} image(s) for you to analyze.\n\nImages:\n{imageList}\n\nUse the `{toolName}` tool on each one.\n\nMy question: {userText}"
+}

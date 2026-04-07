@@ -26,7 +26,7 @@
 
   "permission": {
     "bash": {
-      "*": "ask",
+      "*": "allow",
       "git status*": "allow",
       "git diff*": "allow",
       "git log*": "allow",
@@ -41,7 +41,10 @@
     }
   },
 
-  "plugin": ["opencode-minimax-easy-vision"],
+  "plugin": [
+    "opencode-minimax-easy-vision",
+    "@slkiser/opencode-quota"
+  ],
 
   "mcp": {
 
@@ -49,8 +52,8 @@
       "type": "local",
       "command": ["uvx", "minimax-coding-plan-mcp"],
       "environment": {
-        "MINIMAX_API_HOST": "https://api.minimax.io",
-        "MINIMAX_API_KEY": "{env:MINIMAX_API_KEY}"
+        "MINIMAX_API_KEY": "{env:MINIMAX_API_KEY}",
+        "MINIMAX_API_HOST": "https://api.minimax.io"
       }
     },
 
