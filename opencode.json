@@ -4,8 +4,6 @@
   "autoshare": false,
   "autoupdate": true,
 
-  "model": "{env:MINIMAX_MODEL}",
-
   "provider": {
     "opencode": {
       "options": {
@@ -21,10 +19,90 @@
       "options": {
         "apiKey": "{env:MINIMAX_API_KEY}"
       }
+    },
+    "openai": {
+      "options": {
+        "apiKey": "{env:CODEX_LB_API_KEY}",
+        "baseURL": "https://codex-lb.kit/v1"
+      },
+      "models": {
+        "gpt-5.4": {
+          "name": "GPT-5.4",
+          "reasoning": true,
+          "options": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed"
+          },
+          "limit": {
+            "context": 1050000,
+            "output": 128000
+          }
+        },
+        "gpt-5.3-codex": {
+          "name": "GPT-5.3 Codex",
+          "reasoning": true,
+          "options": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed"
+          },
+          "limit": {
+            "context": 272000,
+            "output": 65536
+          }
+        },
+        "gpt-5.1-codex-mini": {
+          "name": "GPT-5.1 Codex Mini",
+          "reasoning": true,
+          "options": {
+            "reasoningEffort": "high",
+            "reasoningSummary": "detailed"
+          },
+          "limit": {
+            "context": 272000,
+            "output": 65536
+          }
+        },
+        "gpt-5.3-codex-spark": {
+          "name": "GPT-5.3 Codex Spark",
+          "reasoning": true,
+          "options": {
+            "reasoningEffort": "xhigh",
+            "reasoningSummary": "detailed"
+          },
+          "limit": {
+            "context": 128000,
+            "output": 65536
+          }
+        }
+      }
+    }
+  },
+
+  "model": "{env:MINIMAX_MODEL}",
+  "default_agent": "build",
+
+  "agent": {
+    "build": {
+      "model": "{env:MINIMAX_MODEL}"
+    },
+    "plan": {
+      "model": "{env:MINIMAX_MODEL}"
+    },
+    "master-build": {
+      "model": "{env:OPENAI_MODEL}"
+    },
+    "master-plan": {
+      "model": "{env:OPENAI_MODEL}"
     }
   },
 
   "permission": {
+    "MiniMax_*": "deny",
+
+    "external_directory": {
+      "/nix/store/**": "allow"
+    },
+
     "bash": {
       "*": "allow",
       "git status*": "allow",
@@ -47,15 +125,7 @@
     "@slkiser/opencode-quota"
   ],
 
-  "experimental": {
-    "quotaToast": {
-      "enabled": true,
-      "showOnQuestion": false
-    }
-  },
-
   "mcp": {
-
     "MiniMax": {
       "enabled": true,
       "type": "local",
@@ -98,7 +168,12 @@
       "type": "remote",
       "url": "https://mcp.figma.com/mcp"
     }
+  },
 
+  "experimental": {
+    "quotaToast": {
+      "enabled": false,
+      "showOnQuestion": false
+    }
   }
-
 }
