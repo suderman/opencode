@@ -53,3 +53,10 @@ cp .env.example .env
 
 Uses direnv for automatic env loading. Run `nix develop` or `npm i opencode-ai`
 to get the binary.
+
+## Current models reference
+
+- `minimax-coding-plan/MiniMax-M2.7`
+- `openai/gpt-5.4`
+- `opencode/claude-opus-4-6`
+- `openrouter/google/gemini-3-pro-preview`
