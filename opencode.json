@@ -4,6 +4,36 @@
   "autoshare": false,
   "autoupdate": true,
 
+  "model": "minimax-coding-plan/MiniMax-M2.7",
+  "default_agent": "build",
+
+  "permission": {
+    "MiniMax_*": "deny",
+
+    "external_directory": {
+      "/nix/store/**": "allow"
+    },
+
+    "bash": {
+      "*": "allow",
+      "git push*": "ask",
+      "*nixos-rebuild*": "deny"
+    }
+  },
+
+  "experimental": {
+    "quotaToast": {
+      "enabled": false,
+      "showOnQuestion": false
+    }
+  },
+
+  "plugin": [
+    "opencode-minimax-easy-vision",
+    "@simonwjackson/opencode-direnv",
+    "@slkiser/opencode-quota"
+  ],
+
   "provider": {
     "opencode": {
       "options": {
@@ -78,53 +108,6 @@
     }
   },
 
-  "model": "{env:MINIMAX_MODEL}",
-  "default_agent": "build",
-
-  "agent": {
-    "build": {
-      "model": "{env:MINIMAX_MODEL}"
-    },
-    "plan": {
-      "model": "{env:MINIMAX_MODEL}"
-    },
-    "master-build": {
-      "model": "{env:OPENAI_MODEL}"
-    },
-    "master-plan": {
-      "model": "{env:OPENAI_MODEL}"
-    }
-  },
-
-  "permission": {
-    "MiniMax_*": "deny",
-
-    "external_directory": {
-      "/nix/store/**": "allow"
-    },
-
-    "bash": {
-      "*": "allow",
-      "git status*": "allow",
-      "git diff*": "allow",
-      "git log*": "allow",
-      "rg *": "allow",
-      "grep *": "allow",
-      "find *": "allow",
-      "ls *": "allow",
-      "cat *": "allow",
-      "nix eval*": "allow",
-      "git push*": "ask",
-      "*nixos-rebuild*": "deny"
-    }
-  },
-
-  "plugin": [
-    "opencode-minimax-easy-vision",
-    "@simonwjackson/opencode-direnv",
-    "@slkiser/opencode-quota"
-  ],
-
   "mcp": {
     "MiniMax": {
       "enabled": true,
@@ -168,12 +151,6 @@
       "type": "remote",
       "url": "https://mcp.figma.com/mcp"
     }
-  },
-
-  "experimental": {
-    "quotaToast": {
-      "enabled": false,
-      "showOnQuestion": false
-    }
   }
+
 }
