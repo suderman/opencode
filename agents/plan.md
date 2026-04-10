@@ -1,6 +1,7 @@
 ---
-description: Default planning agent using MiniMax
+description: Default planning agent
 mode: primary
+model: minimax-coding-plan/MiniMax-M2.7
 permission:
   MiniMax_*: allow
   edit: ask

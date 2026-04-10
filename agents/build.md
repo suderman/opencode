@@ -1,6 +1,7 @@
 ---
-description: Default implementation agent using MiniMax
+description: Default implementation agent
 mode: primary
+model: minimax-coding-plan/MiniMax-M2.7
 permission:
   MiniMax_*: allow
 ---

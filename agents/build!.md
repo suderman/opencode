@@ -1,5 +1,5 @@
 ---
-description: High-reasoning implementation agent using OpenAI
+description: High-reasoning implementation agent
 mode: primary
 model: openai/gpt-5.4
 ---

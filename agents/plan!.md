@@ -1,5 +1,5 @@
 ---
-description: High-reasoning planning agent using OpenAI
+description: High-reasoning planning agent
 mode: primary
 model: openai/gpt-5.4
 permission:
