@@ -1,5 +1,5 @@
 ---
-name: web-design-guidelines
+name: ui-guidelines-review
 description: Review UI code for Web Interface Guidelines compliance. Use when asked to "review my UI", "check accessibility", "audit design", "review UX", or "check my site against best practices".
 metadata:
   author: vercel
@@ -7,9 +7,9 @@ metadata:
   argument-hint: <file-or-pattern>
 ---
 
-# Web Interface Guidelines
+# UI Guidelines Review
 
-Review files for compliance with Web Interface Guidelines.
+Review UI implementations for compliance with Web Interface Guidelines.
 
 ## How It Works
 
@@ -17,6 +17,15 @@ Review files for compliance with Web Interface Guidelines.
 2. Read the specified files (or prompt user for files/pattern)
 3. Check against all rules in the fetched guidelines
 4. Output findings in the terse `file:line` format
+
+## Scope
+
+Use this skill for guideline-based UI reviews of code or markup.
+
+- If the task is primarily a live-browser inspection or reproduction task, also
+  load `browser-testing`.
+- If the task requires temporary CSS or JavaScript experiments in the browser,
+  also load `web-inspector-editing`.
 
 ## Guidelines Source
 
@@ -26,7 +35,7 @@ Fetch fresh guidelines before each review:
 https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md
 ```
 
-Use WebFetch to retrieve the latest rules. The fetched content contains all the
+Use `webfetch` to retrieve the latest rules. The fetched content contains all the
 rules and output format instructions.
 
 ## Usage
@@ -38,4 +47,7 @@ When a user provides a file or pattern argument:
 3. Apply all rules from the fetched guidelines
 4. Output findings using the format specified in the guidelines
 
-If no files specified, ask the user which files to review.
+If no files are specified, ask the user which files or file patterns to review.
+
+If the user provides only a live URL, inspect the rendered page first and ask
+whether they also want file-mapped findings.

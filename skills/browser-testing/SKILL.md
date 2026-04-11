@@ -1,14 +1,16 @@
 ---
-name: chromium-cdp-testing
-description: Test and debug local web applications using an already-running Chromium instance exposed through remote debugging or browser MCP tools. Prefers reconnaissance-first browser inspection, screenshots, console/network inspection, and rendered-DOM analysis before taking action.
+name: browser-testing
+description: Test and debug web applications using an already-running Chromium instance. Prefers reconnaissance-first browser inspection, screenshots, console/network inspection, and rendered-DOM analysis before taking action.
 license: CC0-1.0
 ---
 
-# Chromium CDP Testing
+# Browser Testing
 
-Use this skill when working on local web applications that can be inspected
-through an existing Chromium instance, especially when browser control is
-already available through remote debugging or MCP tools.
+Use this skill when working on web applications that can be inspected through
+an existing Chromium instance.
+
+Load `browser-control-basics` first for the shared environment rules around MCP,
+direct CDP fallback, and what counts as real browser control.
 
 This skill is for:
 
@@ -19,9 +21,9 @@ This skill is for:
 - taking screenshots during testing
 - validating fixes in the running app
 
-If browser MCP tools are available, prefer them over writing fresh automation
-scripts. Only write scripts when repeated execution or complex multi-step
-validation is genuinely needed.
+Prefer existing browser-control paths over writing fresh automation scripts.
+Only write scripts when repeated execution or complex multi-step validation is
+genuinely needed.
 
 ## Core rule
 
@@ -35,8 +37,8 @@ selectors and actions from what actually exists in the browser.
 Prefer the existing running Chromium session over launching a separate browser
 stack.
 
-Use the already-available browser/CDP/MCP tooling first. Only fall back to a
-separate automation stack if:
+Use the available browser-control path first. Only fall back to a separate
+automation stack if:
 
 - browser tools are unavailable
 - the existing Chromium instance cannot be reached
@@ -54,7 +56,7 @@ User task → Is it static HTML or mostly server-rendered with predictable marku
 
 - No, it is dynamic:
   1. Ensure the app is running
-  2. Connect to the existing Chromium session or use browser MCP tools
+  2. Connect to the existing Chromium session using the available browser-control path
   3. Navigate to the relevant page
   4. Wait for the page to settle
   5. Inspect rendered DOM, console, network activity, and screenshots
@@ -130,9 +132,9 @@ When something looks broken:
 4. Check network failures
 5. Inspect the affected DOM region
 6. Form a concrete hypothesis
-7. change the code
-8. retest in the browser
-9. confirm the fix visually and functionally
+7. Change the code
+8. Retest in the browser
+9. Confirm the fix visually and functionally
 
 ## Selector guidance
 

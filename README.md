@@ -16,9 +16,11 @@ Personal opencode configuration synced to GitHub.
 
 | Skill                   | Purpose                                    |
 | ----------------------- | ------------------------------------------ |
+| `browser-control-basics`| Shared Chromium control rules              |
 | `systematic-debugging`  | Root-cause-first debugging methodology     |
-| `chromium-cdp-testing`  | Browser-based web app testing via CDP      |
-| `web-design-guidelines` | Web Interface Guidelines compliance review |
+| `browser-testing`       | Browser-based web app testing in Chromium  |
+| `ui-guidelines-review`  | Web Interface Guidelines compliance review |
+| `web-inspector-editing` | Temporary live-browser CSS and JS testing  |
 
 ## MCP Tools
 
@@ -27,6 +29,25 @@ Personal opencode configuration synced to GitHub.
 - `context7` - Documentation search
 - `gh_grep` - GitHub code search
 - `figma` - Figma integration (requires auth, see below)
+
+### Chrome DevTools MCP
+
+I created a wrapper around `chrome-devtools` using flock. The original mcp
+configuration it replaced looked like this:
+
+```json
+"chrome-devtools": {
+  "enabled": true,
+  "type": "local",
+  "command": [
+    "npx",
+    "-y",
+    "chrome-devtools-mcp@latest",
+    "--browser-url=http://127.0.0.1:9222",
+    "--no-usage-statistics"
+  ]
+},
+```
 
 ### Figma MCP Setup
 
