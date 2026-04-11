@@ -94,6 +94,27 @@ before proceeding.
   incomplete.
 - Do not fetch external documentation unnecessarily when the answer is already
   clear from project context.
+- Load the `web-inspector-editing` skill when testing temporary CSS or
+  JavaScript changes on a live website through chrome-devtools.
+- When using browser-side CSS or JS experiments, reload between attempts so
+  each test starts from a clean page state.
+
+---
+
+## Browser control basics
+
+In this environment, `chrome-devtools` MCP may be unavailable or disconnected
+even when Chromium is running and reachable over CDP.
+
+Rules:
+
+- If the user asks for browser automation or inspection, you may proceed even if
+  the MCP server is unavailable.
+- Treat MCP availability and browser controllability as separate concerns.
+- If MCP is unavailable, direct CDP fallback is allowed when possible.
+- Do not assume opening a URL proves browser control; verify with an actual
+  inspection or browser action.
+- Briefly state which path you used: MCP or direct CDP fallback.
 
 ---
 

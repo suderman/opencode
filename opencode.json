@@ -120,15 +120,8 @@
     },
 
     "chrome-devtools": {
-      "enabled": true,
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "chrome-devtools-mcp@latest",
-        "--browser-url=http://127.0.0.1:9222",
-        "--no-usage-statistics"
-      ]
+      "command": ["chrome-devtools-9222"]
     },
 
     "context7": {
