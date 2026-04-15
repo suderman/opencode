@@ -5,7 +5,16 @@
   "autoupdate": true,
 
   "model": "minimax-coding-plan/MiniMax-M2.7",
-  "default_agent": "build",
+  "default_agent": "main",
+
+  "agent": {
+    "build": {
+      "disable": true
+    },
+    "plan": {
+      "disable": true
+    }
+  },
 
   "permission": {
     "MiniMax_*": "deny",
@@ -60,7 +69,7 @@
           "name": "GPT-5.4",
           "reasoning": true,
           "options": {
-            "reasoningEffort": "high",
+            "reasoningEffort": "medium",
             "reasoningSummary": "detailed"
           },
           "limit": {
@@ -72,7 +81,7 @@
           "name": "GPT-5.3 Codex",
           "reasoning": true,
           "options": {
-            "reasoningEffort": "high",
+            "reasoningEffort": "medium",
             "reasoningSummary": "detailed"
           },
           "limit": {
@@ -84,7 +93,7 @@
           "name": "GPT-5.1 Codex Mini",
           "reasoning": true,
           "options": {
-            "reasoningEffort": "high",
+            "reasoningEffort": "medium",
             "reasoningSummary": "detailed"
           },
           "limit": {
