@@ -20,7 +20,22 @@
     "MiniMax_*": "deny",
 
     "external_directory": {
-      "/nix/store/**": "allow"
+      "/nix/store/**": "allow",
+      "/tmp/**": "allow"
+    },
+
+    "read": {
+      "*": "allow",
+      "*.env": "ask",
+      "*.env.*": "ask",
+      "*.env.example": "allow",
+      "/nix/store/**": "allow",
+      "/tmp/**": "allow"
+    },
+
+    "edit": {
+      "/nix/store/**": "deny",
+      "/tmp/**": "allow"
     },
 
     "bash": {
@@ -129,8 +144,9 @@
     },
 
     "chrome-devtools": {
-      "type": "local",
-      "command": ["chrome-devtools-9222"]
+      "type": "remote",
+      "url": "http://127.0.0.1:9222",
+      "enabled": true
     },
 
     "context7": {
