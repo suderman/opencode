@@ -12,6 +12,20 @@ in Chromium.
 This skill defines the shared environment rules for browser control. Load it
 before using more specialized browser skills.
 
+## Expected browser
+
+This setup expects browser automation to use the Chromium instance launched by:
+
+```sh
+chromium-agent
+```
+
+Do not launch raw `chromium`, `google-chrome`, or a fresh browser profile for
+agent-controlled browser work unless explicitly instructed.
+
+Prefer the existing running Chromium session over launching a separate browser
+stack.
+
 ## Environment note
 
 In this environment, `chrome-devtools` MCP may be unavailable or disconnected
@@ -19,14 +33,37 @@ even when Chromium is running and reachable over CDP.
 
 Treat MCP availability and browser controllability as separate concerns.
 
+## Startup check
+
+Before debugging MCP itself, first check whether the expected browser is running
+and reachable.
+
+```sh
+pgrep -af 'chromium.*remote-debugging|chromium-agent'
+```
+
+Check the CDP endpoint used by this setup:
+
+```sh
+curl -s http://127.0.0.1:9222/json/version
+```
+
+Adjust the port only if the local wrapper uses a different one.
+
+If the expected browser is not running, launch it with:
+
+```sh
+chromium-agent
+```
+
 ## Allowed control paths
 
 If the user asks for browser automation or inspection:
 
 - use MCP when it is available and appropriate
 - if MCP is unavailable, direct CDP fallback is allowed when possible
-- prefer the existing running Chromium session over launching a separate browser
-  stack
+- if both MCP and CDP fail, check `chromium-agent` before debugging the MCP
+  server
 
 ## What does not prove control
 
@@ -50,6 +87,7 @@ Briefly state which control path you used:
 
 - MCP
 - direct CDP fallback
+- no browser control available
 
 ## Scope discipline
 
