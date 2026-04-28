@@ -2,19 +2,29 @@
 
 ## Purpose
 
-This document defines baseline conventions and expectations for all agents
-contributing to a project.
+This document defines baseline conventions for agents contributing to a project.
 
-Treat it as a default operating guide, not a substitute for project-specific
-documentation, code conventions, or direct user instructions.
+Treat it as a default operating guide. Project-specific documentation, existing
+code conventions, and direct user instructions take precedence.
+
+Instruction priority:
+
+1. Direct user instructions
+2. Project-specific docs and scripts
+3. Existing code conventions
+4. This AGENTS.md file
+5. Agent defaults
+
+When instructions conflict, follow the higher-priority source and briefly note
+the conflict if it affects the result.
 
 ---
 
 ## Core principles
 
-- Complexity is the primary enemy. Prefer simple, clear, maintainable solutions
-  over clever or abstract ones.
+- Complexity is the primary enemy.
 - Write code for humans first.
+- Prefer simple, clear, maintainable solutions over clever or abstract ones.
 - Prefer explicit behavior over implicit assumptions.
 - Prefer boring, well-understood solutions unless novelty is explicitly
   required.
@@ -29,27 +39,52 @@ documentation, code conventions, or direct user instructions.
 ## Decision and permission model
 
 - If uncertainty materially affects architecture, security, data integrity,
-  public APIs, or destructive operations, ask for clarification.
+  public APIs, destructive operations, or user-visible behavior, ask for
+  clarification.
 - Otherwise, proceed with the smallest safe and reversible change.
-- Prefer incremental changes over large refactors unless explicitly requested.
+- Prefer incremental changes over broad refactors unless explicitly requested.
 - If progress would otherwise stall, make the smallest meaningful forward change
-  and state any assumptions clearly.
+  and state assumptions clearly.
+- Do not stop at a plan unless the user explicitly asked for planning only.
+
+---
+
+## Worktree hygiene
+
+Before making changes:
+
+- Inspect the current repository state when relevant.
+- Be careful not to overwrite unrelated user changes.
+- Treat pre-existing modifications as user-owned unless clearly produced by the
+  current task.
+- Do not clean, reset, switch branches, rewrite history, delete files, or
+  discard changes unless explicitly instructed.
+
+After making changes:
+
+- Review the relevant diff.
+- Keep the diff scoped to the task.
+- Mention unrelated pre-existing changes if they affect verification or safety.
 
 ---
 
 ## Problem framing before implementation
 
-Before making non-trivial changes:
+For non-trivial changes, briefly identify the objective and constraints before
+editing when doing so improves safety or clarity.
 
-- State the concrete objective.
-- Separate required work from incidental details and nice-to-haves.
-- Identify relevant constraints, including technical, security, architectural,
-  performance, deployment, and project-convention constraints.
-- Solve the smallest meaningful subproblem first.
-- Avoid solving problems that were not explicitly asked for.
+Prefer this framing:
 
-If the task is ambiguous, state assumptions clearly or ask a targeted question
-before proceeding.
+- What needs to change
+- Where the relevant code likely lives
+- What must not change
+- How the result will be verified
+
+Avoid lengthy planning when the next safe action is obvious.
+
+Separate required work from incidental details and nice-to-haves. Solve the
+smallest meaningful subproblem first. Do not solve problems that were not asked
+for.
 
 ---
 
@@ -60,12 +95,14 @@ before proceeding.
 - Preserve existing project conventions unless explicitly instructed to change
   them.
 - When multiple solutions exist, choose the simplest viable one.
-- Explain reasoning briefly before making non-trivial changes.
+- Explain reasoning briefly before non-trivial or risky changes.
 - Avoid introducing new dependencies unless clearly justified.
-- Prefer existing libraries, project utilities, and standard library features
-  over new abstractions.
-- Do not perform speculative cleanup, renaming, or restructuring unless it is
-  necessary to complete the task.
+- Prefer existing project utilities, standard library features, and established
+  libraries over new abstractions.
+- Do not perform speculative cleanup, renaming, formatting, or restructuring
+  unless necessary to complete the task.
+- Avoid changing public APIs, data schemas, migrations, deployment behavior, or
+  security-sensitive paths unless required by the task.
 
 ---
 
@@ -74,11 +111,16 @@ before proceeding.
 - When fixing a bug, reproduce or clearly identify the failure before changing
   code when feasible.
 - Base fixes on evidence, not guesses.
-- After making a change, verify that the requested behavior works in the real
-  execution path relevant to the task.
+- After making a change, verify the requested behavior in the most relevant real
+  execution path available.
+- Use the narrowest useful test, build, lint, typecheck, or runtime check.
 - Do not assume a change is correct merely because it compiles or looks
   reasonable.
-- Check for obvious regressions in nearby behavior when practical.
+- Check nearby behavior for obvious regressions when practical.
+- If validation fails, distinguish between task-related failures and
+  pre-existing or unrelated failures.
+- Do not chase unrelated failures indefinitely. Report them clearly and stop
+  when the requested work has been responsibly verified or bounded.
 
 ---
 
@@ -86,18 +128,18 @@ before proceeding.
 
 - Prefer repository context, existing project documentation, and nearby code
   before fetching external references.
-- Prefer Context7 when working with unfamiliar libraries, APIs, frameworks, or
-  unclear documentation.
-- Use Context7 to resolve `libraryId` and retrieve authoritative documentation
-  when needed.
-- Use `gh_grep` when official documentation is insufficient, ambiguous, or
-  incomplete.
 - Do not fetch external documentation unnecessarily when the answer is already
   clear from project context.
+- Use Context7 when working with unfamiliar libraries, APIs, frameworks, or
+  unclear documentation.
+- Use Context7 to resolve `libraryId` and retrieve documentation when needed.
+- Use `gh_grep` when official documentation is insufficient, ambiguous, stale,
+  or incomplete.
+- Prefer direct evidence from code, tests, logs, and docs over assumptions.
 - Load the `web-inspector-editing` skill when testing temporary CSS or
   JavaScript changes on a live website through chrome-devtools.
-- When using browser-side CSS or JS experiments, reload between attempts so
-  each test starts from a clean page state.
+- When using browser-side CSS or JS experiments, reload between attempts so each
+  test starts from a clean page state.
 
 ---
 
@@ -105,6 +147,17 @@ before proceeding.
 
 In this environment, `chrome-devtools` MCP may be unavailable or disconnected
 even when Chromium is running and reachable over CDP.
+
+Local browser launcher:
+
+- Browser control expects Chromium to be launched through the `chromium-agent`
+  wrapper.
+- Do not launch arbitrary `chromium`, `google-chrome`, or a fresh browser
+  profile for agent-controlled browser work unless the user explicitly asks.
+- Before using chrome-devtools MCP or direct CDP fallback, verify that the
+  `chromium-agent` browser is running and reachable.
+- If browser control fails, first check whether the expected `chromium-agent`
+  instance is running before debugging MCP itself.
 
 Rules:
 
@@ -131,27 +184,21 @@ Guidelines:
 - Use plain ASCII characters in commit messages.
 - Add a body when rationale, tradeoffs, or consequences are not obvious.
 
-### Examples
-
-#### Commit message with no body
+Examples:
 
 ```text
 docs: correct spelling of changelog
 ```
 
-#### Commit message with scope
-
 ```text
 feat(lang): add polish language
 ```
 
-#### Commit message with body and footers
-
 ```text
 fix: prevent request race conditions
 
-Introduce request ids and track the latest request. Ignore responses
-from outdated requests.
+Introduce request ids and track the latest request. Ignore responses from
+outdated requests.
 
 Remove timeouts that previously masked the issue.
 
@@ -173,6 +220,8 @@ Refs: #123
   to discard.
 - Use assertions where appropriate and supported, but do not rely on them as a
   substitute for real validation.
+- Be cautious with filesystem, shell, network, auth, payment, deployment, and
+  migration code.
 
 ---
 
@@ -183,3 +232,4 @@ Refs: #123
 - Prefer explicitness over magic.
 - Prefer maintainability over micro-optimizations.
 - Prefer small, understandable changes over sweeping redesigns.
+- Prefer boring code that works over impressive code that needs explanation.
