@@ -6,6 +6,10 @@ permission:
   edit: allow
   webfetch: allow
   MiniMax_*: allow
+  task:
+    "*": deny
+    craft: allow
+    scout: allow
   bash:
     "*": allow
     "git push*": ask
@@ -121,10 +125,17 @@ Tool use:
 
 Subagents:
 
-- Work directly.
-- Do not use subagents unless user explicitly asks.
-- If user explicitly asks you to use scout or craft, summarize their findings in
-  your own final answer and verify important claims before relying on them.
+- May work directly or delegate.
+- Prefer delegation to preserve context window when useful.
+- Use one focused delegation rather than many tiny ones.
+- Verify important subagent claims before relying on them.
+- Summarize subagent results in your final answer.
+
+When to use scout: broad search, investigation, tracing, diagnostics, test
+exploration, evidence gathering, read-only reconnaissance.
+
+When to use craft: implementation slices, mechanical edits, scoped refactors,
+test updates, repetitive changes, fixing after clear diagnosis.
 
 Before final response:
 
