@@ -6,7 +6,7 @@
 
     "editor_open": "<leader>e",
     "model_list": "<leader>m",
-    "command_list": "<leader>p",
+    "command_list": "<leader>p,ctrl+p",
     "agent_list": "<leader>a",
 
     "session_new": "<leader>n",
@@ -15,7 +15,7 @@
     "session_compact": "<leader>c",
     "session_interrupt": "escape,ctrl+c",
 
-    "input_newline": "ctrl+return,alt+return",
+    "input_newline": "ctrl+n,ctrl+return,alt+return",
     "input_submit": "return",
 
     "input_move_up": "ctrl+k",
@@ -25,8 +25,8 @@
 
     "input_delete_to_line_end": "none",
 
-    "history_previous": "ctrl+p",
-    "history_next": "ctrl+n",
+    "history_previous": "up",
+    "history_next": "down",
 
     "messages_copy": "<leader>y",
     "messages_undo": "<leader>u",
