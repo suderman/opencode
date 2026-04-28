@@ -1,57 +1,41 @@
 ---
 name: claude-browser
-description: Ask Claude questions through the user's logged-in claude.ai Project using opencode-browser. Use when the user wants a second opinion, comparison answer, or asks to "ask Claude".
+description: Ask Claude questions through the user's logged-in claude.ai Project using chrome-devtools MCP. Use when the user wants a second opinion, comparison answer, or asks to "ask Claude".
 ---
 
 # Claude Browser Skill
 
 Use this skill when the user asks you to consult Claude through the browser, ask Claude a question, get a second opinion from Claude, compare your answer with Claude, or retrieve an answer from the user's logged-in Claude web session.
 
-This skill assumes the `@different-ai/opencode-browser` plugin is installed and available.
+## Browser control
 
-## Browser control priority
+Use chrome-devtools MCP tools as the primary control path. Work from the latest snapshot and use UID values from that snapshot.
 
-**Primary:** Use opencode-browser tools (`browser_*`) for all browser control.
+- Use `chrome-devtools_list_pages`, `chrome-devtools_select_page`, `chrome-devtools_new_page`, `chrome-devtools_navigate_page` for tab/page setup.
+- Use `chrome-devtools_take_snapshot` for DOM/accessibility inspection.
+- Use `chrome-devtools_click uid="..."` with snapshot UIDs for clicks.
+- Use `chrome-devtools_fill uid="..."` with snapshot UIDs for text inputs.
+- Use `chrome-devtools_evaluate_script` only when snapshot/click/fill cannot perform a stable action or for reading structured page state.
+- Use `chrome-devtools_wait_for` or repeated snapshots for waiting.
+- Use `chrome-devtools_press_key` only as a fallback when no send button is available.
 
-**Fallbacks (in order):**
-1. `chrome-devtools_*` tools — use only when an opencode-browser tool does not support the needed action
-2. `webfetch` — use only for read-only content retrieval when browser control is unavailable
-
-**Do not use MCP browser tools as the primary path.** Only use them if the opencode-browser plugin is genuinely unavailable and the user explicitly requests a separate worker browser.
-
-## opencode-browser tool constraints
-
-Use only actual opencode-browser modes and controls.
-
-- Use `browser_snapshot` for accessibility/DOM snapshots.
-- Use `browser_query mode="page_text"` for page text extraction.
-- Do **not** call `browser_query mode="snapshot"`; that mode does not exist.
-- Do **not** use `browser_query mode="page_text" selector="role:textbox"` to decide whether a textbox exists. `page_text` extracts visible text; it is not a selector existence check.
-- Use `browser_type selector="role:textbox" ...` for Claude's composer.
-- Use `browser_click selector="aria:Send message"` to submit.
-- If a selector fails, inspect with `browser_snapshot`; do not invent unsupported query modes or tools.
+Claude must remain inside the `opencode` project. Automated Claude chats should live inside this project.
 
 ## Entry URL
 
 For the most reliable project-scoped flow, start from the Claude projects index:
 
-```text
+```
 https://claude.ai/projects
 ```
 
-Then click the project named:
-
-```text
-opencode
-```
+Then click the project named `opencode` using the UID from a snapshot.
 
 Direct project URL, useful as a fallback or verification target:
 
-```text
+```
 https://claude.ai/project/019dd048-be96-755c-8349-f76d8c66ed29
 ```
-
-Automated Claude chats should live inside this project.
 
 ## Core Rules
 
@@ -59,7 +43,7 @@ Automated Claude chats should live inside this project.
 - If Claude is not logged in, stop. Ask the user to log in manually and create an active logged-in session, then retry.
 - Dismiss overlays, popups, marketing banners, "What's new" dialogs, cookie banners, upgrade prompts, or similar interruptions before proceeding.
 - Ensure Extended thinking / extended reasoning is enabled before submitting a prompt, if the Claude UI exposes such a setting for the current model/session.
-- Submit the prompt by clicking `aria:Send message`; Return/Enter is not reliable in this environment.
+- Submit the prompt by clicking the Send button using `chrome-devtools_click` with the UID from a snapshot. Prefer the button with accessible name "Send message".
 - Allow Claude enough time to generate the answer. This may take 30 seconds to 5 minutes depending on complexity and network speed.
 - Summarize the final answer and any relevant details when returning the result to the user.
 - Keep track of the browser tab for follow-up questions. Continue in the same tab when the user's next request is a follow-up. For unrelated questions, return to `https://claude.ai/projects`, click `opencode`, and use that project page composer. Do not use the global `New chat` button.
@@ -70,13 +54,7 @@ Automated Claude chats should live inside this project.
 
 Prefer the current Claude project tab if it is already open and still relevant.
 
-Use `browser_get_tabs` to find an existing tab whose URL contains one of:
-
-```text
-claude.ai/project/019dd048-be96-755c-8349-f76d8c66ed29
-claude.ai/chat/
-claude.ai/
-```
+Use `chrome-devtools_list_pages` to find existing tabs.
 
 If the current task is a follow-up, reuse the existing active Claude tab from the previous request.
 
@@ -88,24 +66,14 @@ For unrelated new questions, return to the projects index, click `opencode`, and
 
 Claude project chats may end up at URLs like `https://claude.ai/chat/<uuid>`, even when they belong to a project. Do not decide project membership from the URL alone.
 
-Use visible page evidence instead. A valid project-scoped chat/page should show project context such as:
-
-```text
-opencode
-Project content
-Project content
-opencode
-Memory
-Instructions
-Files
-```
+Use visible page evidence instead. A valid project-scoped chat/page should show project context such as `opencode`, "Project content", "Memory", "Instructions", "Files".
 
 On the project landing page, the valid project composer is the large rounded input box under the `opencode` title. It may already contain stale draft text such as `hello`. This is still the correct composer. The stale text is not a previous message and is not a reason to leave the page.
 
 Most reliable project flow for unrelated questions:
 
 1. Navigate to `https://claude.ai/projects`.
-2. Click the project named `opencode`.
+2. Click the project named `opencode` using the UID from a snapshot.
 3. Verify project context is visible (`opencode`, and ideally `Project content / opencode`).
 4. Inspect the composer. If it contains stale draft text from a previous session, clear it.
 5. Type the user's prompt into the composer on that project page.
@@ -119,7 +87,7 @@ Do **not** navigate to an existing chat for an unrelated question just because t
 
 Red flags that you left project scope:
 
-```text
+```
 https://claude.ai/new
 Good afternoon, Jon
 How can I help you today?
@@ -135,95 +103,51 @@ If you see `/new` or the generic home composer after clicking `New chat`, stop. 
 
 ### 1. Check browser availability
 
-Use:
+Use `chrome-devtools_list_pages` to see open tabs. If no relevant tabs exist, open a new one with `chrome-devtools_new_page`.
 
-```text
-browser_status
-```
-
-If unavailable, report the browser/plugin problem directly.
+If the chrome-devtools connection is unavailable, report the problem directly.
 
 ### 2. Open or reuse the Claude project tab
 
 First inspect existing tabs:
 
-```text
-browser_get_tabs
+```
+chrome-devtools_list_pages
 ```
 
-If there is a relevant Claude tab for this session and the user is asking a follow-up, use it.
+If there is a relevant Claude tab for this session and the user is asking a follow-up, use `chrome-devtools_select_page` to switch to it.
 
 Otherwise open a new tab and navigate to the projects index:
 
-```text
-browser_open_tab
-browser_navigate url="https://claude.ai/projects"
+```
+chrome-devtools_new_page url="https://claude.ai/projects"
 ```
 
-Then click the project named `opencode`. This is more reliable than starting from `/new` or using global chat controls because it gives a visible project-selection step.
-
-If `browser_snapshot` on an existing Claude tab fails with a browser permission error, do not infer login or page state from it. Navigate that tab to `https://claude.ai/projects`, then inspect again.
+Then click the project named `opencode` using the UID from a snapshot. This is more reliable than starting from `/new` or using global chat controls because it gives a visible project-selection step.
 
 ### 3. Dismiss overlays
 
-After initial page load, inspect the page:
+After initial page load, take a snapshot:
 
-```text
-browser_snapshot
-browser_query mode="page_text"
+```
+chrome-devtools_take_snapshot
 ```
 
-Dismiss any overlay, modal, banner, or marketing prompt that blocks the input.
+Dismiss any overlay, modal, banner, or marketing prompt that blocks the input. Click dismiss controls using their UIDs from the snapshot. Do not click destructive or account-changing actions. Avoid anything that subscribes, upgrades, changes plans, enables sharing, or modifies account settings.
 
-Common dismiss controls may include:
-
-```text
-aria:Close
-aria:Dismiss
-aria:Not now
-aria:Maybe later
-aria:Skip
-aria:Got it
-aria:Continue
-aria:OK
-text:Close
-text:Dismiss
-text:Not now
-text:Maybe later
-text:Skip
-text:Got it
-text:Continue
-css:button[aria-label="Close"]
-css:button[aria-label="Dismiss"]
-```
-
-Do not click destructive or account-changing actions. Avoid anything that subscribes, upgrades, changes plans, enables sharing, or modifies account settings.
-
-After each dismissal, inspect again. Continue until the prompt composer is reachable or until blocked by login/verification.
+After each dismissal, take another snapshot. Continue until the prompt composer is reachable or until blocked by login/verification.
 
 ### 4. Verify logged-in state
 
-Use:
+Take a snapshot and inspect the page text:
 
-```text
-browser_query mode="page_text"
-browser_snapshot
+```
+chrome-devtools_take_snapshot
 ```
 
-If the page shows login/signup state, examples:
+If the page shows login/signup state, such as "Log in", "Sign in", "Sign up", "Continue with Google", "Continue with Apple", or "Continue with email", stop and tell the user:
 
-```text
-Log in
-Sign in
-Sign up
-Continue with Google
-Continue with Apple
-Continue with email
 ```
-
-stop and tell the user:
-
-```text
 Claude is not logged in in this browser session. Please log in manually and create an active logged-in session, then I can retry.
 ```
 
@@ -238,66 +162,25 @@ For unrelated new questions, do **not** open an existing chat from the project r
 For unrelated new questions:
 
 1. Navigate to `https://claude.ai/projects`.
-2. Click the project named `opencode`.
+2. Click the project named `opencode` using the UID from a snapshot.
 3. Verify the resulting page shows project context (`opencode`, and ideally `Project content / opencode`).
 4. Use the large rounded composer on that project page directly, even if it contains stale draft text like `hello`.
 
-Selector ideas for selecting the project:
-
-```text
-text:opencode
-aria:opencode
-```
-
 Do not click the sidebar/global `New chat` control. It commonly routes to `https://claude.ai/new`, which loses project scope. If the composer already has a stale draft, clear it; do not navigate to `/new`.
 
-Before typing, verify you are not on the generic home composer:
-
-```text
-browser_query mode="page_text"
-```
-
-If the page text contains `Good afternoon, Jon`, `How can I help you today?`, and no visible `Project content / opencode`, you are probably on `/new`. Navigate back to `https://claude.ai/projects` and click `opencode` again.
+Before typing, verify you are not on the generic home composer by checking the snapshot. If the page text contains `Good afternoon, Jon`, `How can I help you today?`, and no visible `Project content / opencode`, you are probably on `/new`. Navigate back to `https://claude.ai/projects` and click `opencode` again.
 
 If the page text contains `opencode` plus `Memory`, `Instructions`, and `Files`, and the visible page shows a large rounded input box under the `opencode` title, that is the correct project composer. Do not search for another textbox. Clear and type into it.
 
-Before typing, always clear any pre-existing unsubmitted text from the input field:
+Before typing, always clear any pre-existing unsubmitted text from the input field using `chrome-devtools_fill` with the textbox UID and an empty string.
 
-```text
-browser_type selector="role:textbox" text="" clear="true"
-```
-
-If `role:textbox` fails but the project composer is visibly present, retry these selectors in order:
-
-```text
-css:[contenteditable="true"]
-css:textarea
-```
-
-Then verify the input is empty or no stale prompt appears near the composer:
-
-```text
-browser_snapshot
-browser_query mode="page_text"
-```
-
-If `clear="true"` does not clear the composer, use keyboard selection after focusing the textbox:
-
-```text
-browser_click selector="role:textbox"
-browser_type selector="role:textbox" text="" clear="true"
-```
+If `chrome-devtools_fill` does not clear the composer, use `chrome-devtools_click` to focus the textbox first, then fill with empty string.
 
 If it is still not clear, stop and report that the stale draft could not be cleared. Do **not** click global `New chat` as a workaround.
 
 ### 6. Ensure Extended thinking is enabled
 
-Before submitting, inspect the composer/model controls:
-
-```text
-browser_snapshot
-browser_query mode="page_text"
-```
+Before submitting, take a snapshot and inspect the composer/model controls.
 
 Find the model/thinking/reasoning controls. Ensure Extended thinking / extended reasoning is enabled if available.
 
@@ -308,21 +191,9 @@ Possible workflow:
 3. Choose or enable `Extended thinking`, `Extended`, `Think`, `Thinking`, or equivalent.
 4. Verify the visible state indicates extended thinking is active.
 
-Selector ideas will change as Claude's UI changes. Prefer ARIA/snapshot-driven interaction over hard-coded CSS.
+Selector ideas will change as Claude's UI changes. Prefer snapshot-driven interaction over hard-coded selectors.
 
-Look for controls or labels such as:
-
-```text
-Thinking
-Think
-Reason
-Reasoning
-Extended
-Extended thinking
-More
-Tools
-Model
-```
+Look for controls or labels such as "Thinking", "Think", "Reason", "Reasoning", "Extended", "Extended thinking", "More", "Tools", "Model".
 
 If Extended thinking is not available in the current model/project/session, do not silently proceed. Report the limitation and ask the user whether to continue without Extended thinking.
 
@@ -332,81 +203,28 @@ Prepare a concise, self-contained prompt. Type it directly as the user — do **
 
 Prompt template — use directly, verbatim:
 
-```text
+```
 <USER_TASK>
 ```
 
-For code review:
-
-```text
-Review this code and identify bugs, risks, and improvements:
-
-<CODE>
-
-Context: <CONTEXT>
-```
-
-For answer comparison:
-
-```text
-Compare these two approaches and tell me which is better and why:
-
-Approach A: <A>
-
-Approach B: <B>
-```
-
-Focus the Claude input field.
-
-Prefer selectors in this order:
-
-```text
-role:textbox
-aria:Message Claude
-placeholder:Message Claude
-placeholder:How can Claude help you
-css:textarea
-css:[contenteditable="true"]
-```
-
-Use:
-
-```text
-browser_type selector="role:textbox" text="<PROMPT>"
-```
-
-If typing fails, use `browser_snapshot` to find the composer element and retry with a more specific selector.
+Focus the Claude input field and type the prompt using `chrome-devtools_fill` with the UID from a snapshot.
 
 ### 8. Submit the prompt
 
-After the input field has focus and the prompt text is present, submit by clicking the Send button.
+After the input field has focus and the prompt text is present, submit by clicking the Send button using `chrome-devtools_click` with the UID from a snapshot.
 
-**Primary submit method:**
+**Primary submit method:** Look for a button with accessible name "Send message".
 
-```text
-browser_click selector="aria:Send message"
-```
-
-The `aria:Send message` button is the reliable submit control on claude.ai. Pressing Return/Enter via keyboard tools does not reliably trigger submission in this environment.
-
-If `aria:Send message` is not found, fall back to:
-
-```text
-browser_click selector="text:Send"
-browser_click selector="aria:Send"
-css:button[aria-label="Send message"]
-```
+Do not rely on `chrome-devtools_press_key` — it does not reliably trigger submission on claude.ai.
 
 ### 9. Wait for completion
 
 Allow 30 seconds to 5 minutes.
 
-Poll periodically:
+Poll periodically by taking snapshots:
 
-```text
-browser_wait
-browser_query mode="page_text"
-browser_snapshot
+```
+chrome-devtools_take_snapshot
 ```
 
 The response is probably still streaming if:
@@ -434,8 +252,8 @@ Prefer the cleanest extraction method available.
 
 Best option:
 
-1. Use `browser_snapshot` to locate the Copy button nearest the latest assistant response.
-2. Click that Copy button.
+1. Use `chrome-devtools_take_snapshot` to locate the Copy button nearest the latest assistant response.
+2. Click that Copy button using its UID.
 3. Read the clipboard with shell if allowed:
 
 ```bash
@@ -449,14 +267,7 @@ xclip -selection clipboard -o
 xsel -b
 ```
 
-If clipboard extraction is unavailable, use:
-
-```text
-browser_query mode="page_text"
-browser_snapshot
-```
-
-Then extract the latest assistant message after the submitted prompt.
+If clipboard extraction is unavailable, use `chrome-devtools_take_snapshot` and `chrome-devtools_evaluate_script` to read page content, then extract the latest assistant message after the submitted prompt.
 
 Avoid returning the entire noisy page. Return the final answer and relevant details only.
 
@@ -464,7 +275,7 @@ Avoid returning the entire noisy page. Return the final answer and relevant deta
 
 Use this format:
 
-```text
+```
 Claude said:
 
 <concise summary of Claude's final answer>
@@ -480,22 +291,13 @@ My read:
 
 If the user asked only to fetch Claude's answer, keep your own assessment short.
 
-## Fallback tools (when opencode-browser is unavailable)
-
-If opencode-browser tools are unavailable, fall back in this order:
-
-1. **`chrome-devtools_*` tools** — for direct CDP actions (click, navigate, evaluate script, press key)
-2. **`webfetch`** — for read-only content retrieval only
-
-Avoid using `chrome-devtools_*` as the primary path when opencode-browser tools work. Their CDP sessions may conflict with the opencode-browser plugin.
-
 ## Troubleshooting
 
 ### Claude is logged out
 
 Stop and say:
 
-```text
+```
 Claude is not logged in in this browser session. Please log in manually and create an active logged-in session, then I can retry.
 ```
 
@@ -503,43 +305,35 @@ Claude is not logged in in this browser session. Please log in manually and crea
 
 Stop and say:
 
-```text
+```
 Claude is asking for human verification. Please complete it manually in the browser, then I can continue.
 ```
 
 ### Overlay blocks the page
 
-Dismiss harmless overlays with Close, Dismiss, Not now, Maybe later, Skip, Got it, Continue, or OK.
-
-Do not click upgrade, subscribe, enable, buy, connect account, share, or privacy-sensitive account actions.
+Dismiss harmless overlays. Do not click upgrade, subscribe, enable, buy, connect account, share, or privacy-sensitive account actions.
 
 ### Extended thinking is unavailable
 
 Stop and say:
 
-```text
+```
 I cannot find or enable Extended thinking in this Claude session. Do you want me to continue without it?
 ```
 
 ### Prompt typed but did not submit
 
-If the prompt was typed but not submitted:
+Take a snapshot and click the Send button directly using its UID.
 
-1. Click the Send button directly: `browser_click selector="aria:Send message"`
-2. Do not rely on Return/Enter keypresses — they do not reliably trigger submission on claude.ai
-3. Do not spam submissions. One click is sufficient.
+Do not spam submissions. One click is sufficient.
 
 ### Stale text in Claude composer
-
-The project composer may retain a draft from a previous browser session.
-
-Example: the `opencode` project page may show a large rounded composer containing `hello`. This is the correct place to type after clearing it.
 
 Correct behavior:
 
 1. Stay on the verified `opencode` project page.
-2. Clear `role:textbox` with `browser_type clear=true`.
-3. Verify stale text is gone with `browser_snapshot` or `browser_query mode="page_text"`.
+2. Use `chrome-devtools_fill` with the textbox UID and an empty string to clear it.
+3. Verify stale text is gone with a fresh snapshot.
 4. Type the new user prompt.
 
 Incorrect behavior:
@@ -550,30 +344,13 @@ Incorrect behavior:
 - Do not open an existing chat from the project recents list for an unrelated question.
 - Do not treat stale text in the project composer as a previous chat message.
 
-### Unsupported opencode-browser tool calls
-
-If a tool call fails with an unsupported mode or selector, inspect with `browser_snapshot` and retry with supported primitives.
-
-Known invalid call:
-
-```text
-browser_query mode="snapshot"
-```
-
-Use instead:
-
-```text
-browser_snapshot
-browser_query mode="page_text"
-```
-
 ### Response extraction is messy
 
 Use the Copy button nearest the latest response. This is usually cleaner than parsing all page text.
 
 ### Multiple Claude tabs exist
 
-Use `browser_get_tabs`. Prefer the tab already used for this OpenCode session when the user asks a follow-up. For unrelated questions, start a new chat inside the Claude project.
+Prefer the tab already used for this session when the user asks a follow-up. For unrelated questions, start a new chat inside the Claude project.
 
 ### The conversation is too long or off-topic
 

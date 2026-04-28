@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Enable Copilot Think deeper via Chrome DevTools Protocol.
 
-Use this when opencode-browser clicks cannot open Copilot's Smart mode menu and
-chrome-devtools MCP times out. It connects directly to Chromium's remote
-debugging port, finds a Copilot page, clicks the Smart mode button, then clicks
-the Think deeper option.
+This is a fallback when chrome-devtools snapshot/click actions cannot open
+Copilot's Smart mode menu. It connects directly to Chromium's remote debugging
+port, finds a Copilot page, clicks the Smart mode button, then clicks the
+Think deeper option.
+
+Run this script only after snapshot-driven clicks have failed to open the
+mode menu. The script is not the primary path; it is a supplementary fallback.
 """
 
 from __future__ import annotations
