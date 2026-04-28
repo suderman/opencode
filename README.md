@@ -1,6 +1,6 @@
 # Jon's OpenCode Config
 
-Personal opencode configuration synced to GitHub.
+Personal OpenCode configuration synced to GitHub.
 
 ## Structure
 
@@ -9,20 +9,40 @@ Personal opencode configuration synced to GitHub.
 - `tui.json` + `themes/custom.json` - Catppuccin Mocha-inspired TUI theme
 - `AGENTS.md` - Engineering conventions and agent rules
 - `agents/` - Custom agent definitions (review agent with restricted tools)
-- `commands/` - Slash commands (`/commit`, `/test`)
+- `commands/` - Slash commands (`/commit`)
 - `skills/` - Specialized workflows
 
 ## Skills
 
-| Skill                   | Purpose                                    |
-| ----------------------- | ------------------------------------------ |
-| `browser-control-basics`| Shared Chromium control rules              |
-| `systematic-debugging`  | Root-cause-first debugging methodology     |
-| `browser-testing`       | Browser-based web app testing in Chromium  |
-| `ui-guidelines-review`  | Web Interface Guidelines compliance review |
-| `web-inspector-editing` | Temporary live-browser CSS and JS testing  |
+| Skill                    | Purpose                                    |
+| ------------------------ | ------------------------------------------ |
+| `browser-control-basics` | Shared Chromium control rules              |
+| `systematic-debugging`   | Root-cause-first debugging methodology     |
+| `browser-testing`        | Browser-based web app testing in Chromium  |
+| `ui-guidelines-review`   | Web Interface Guidelines compliance review |
+| `web-inspector-editing`  | Temporary live-browser CSS and JS testing  |
+| `chatgpt-browser`        | Ask ChatGPT through browser                |
+| `claude-browser`         | Ask Claude through browser                 |
+| `copilot-browser`        | Ask Microsoft Copilot through browser      |
+| `gemini-browser`         | Ask Gemini through browser                 |
+| `perplexity-browser`     | Ask Perplexity through browser             |
+| `consult-elders`         | Ask all AI assistants simultaneously       |
 
-## MCP Tools
+## Agents
+
+| Agent   | Purpose                                 |
+| ------- | --------------------------------------- |
+| `main`  | Default implementation agent            |
+| `super` | Multi-agent coordination                |
+| `scout` | Read-only investigation and testing     |
+| `craft` | Scoped implementation, edits, refactors |
+| `heavy` | Long-running or complex tasks           |
+
+## Commands
+
+| Command   | Purpose                |
+| --------- | ---------------------- |
+| `/commit` | Guided commit workflow |
 
 - `MiniMax` - Local MCP server via `uvx`
 - `chrome-devtools` - Browser debugging at `localhost:9222`
@@ -32,21 +52,13 @@ Personal opencode configuration synced to GitHub.
 
 ### Chrome DevTools MCP
 
-I created a wrapper around `chrome-devtools` using flock. The original mcp
-configuration it replaced looked like this:
+My agents are expenting a chromium wrapper named `chromium-agent` with its own
+user data directory and remote debugging port set. It should look something like
+this:
 
-```json
-"chrome-devtools": {
-  "enabled": true,
-  "type": "local",
-  "command": [
-    "npx",
-    "-y",
-    "chrome-devtools-mcp@latest",
-    "--browser-url=http://127.0.0.1:9222",
-    "--no-usage-statistics"
-  ]
-},
+```sh
+#!/usr/bin/env
+chromium --user-data-dir=$HOME/.config/chromium-agent --disk-cache-dir=/run/user/$UID/chromium-agent --remote-debugging-port=9222
 ```
 
 ### Figma MCP Setup
@@ -63,7 +75,6 @@ npm i && npm run build && npm start https://mcp.figma.com/mcp
 
 - `opencode-minimax-easy-vision` - Vision support
 - `@simonwjackson/opencode-direnv` - Direnv integration
-- `@slkiser/opencode-quota` - Quota tracking
 
 ## Setup
 
@@ -78,6 +89,6 @@ to get the binary.
 ## Current models reference
 
 - `minimax-coding-plan/MiniMax-M2.7`
-- `openai/gpt-5.4`
-- `opencode/claude-opus-4-6`
+- `openai/gpt-5.5`
+- `opencode/claude-opus-4-7`
 - `openrouter/google/gemini-3-pro-preview`
