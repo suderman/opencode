@@ -4,11 +4,11 @@ mode: primary
 model: openai/gpt-5.5
 permission:
   edit: allow
-  webfetch: ask
+  webfetch: allow
   bash:
     "*": allow
     "git push*": ask
-    "git commit*": ask
+    "git commit*": allow
     "git tag*": ask
     "rm -rf*": deny
     "sudo *": deny

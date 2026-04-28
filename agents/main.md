@@ -4,12 +4,12 @@ mode: primary
 model: minimax-coding-plan/MiniMax-M2.7
 permission:
   edit: allow
-  webfetch: ask
+  webfetch: allow
   MiniMax_*: allow
   bash:
     "*": allow
     "git push*": ask
-    "git commit*": ask
+    "git commit*": allow
     "git tag*": ask
     "git reset*": ask
     "git clean*": ask
