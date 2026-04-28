@@ -6,11 +6,15 @@ license: CC0-1.0
 
 # Web Inspector Editing
 
-Use this skill when you need to inspect a live website URL and try temporary
-CSS or JavaScript edits in the browser before recommending a final change.
+Use this skill when you need to inspect a live website URL and try temporary CSS
+or JavaScript edits in the browser before recommending a final change.
 
 Load `browser-control-basics` first for the shared environment rules around MCP,
 direct CDP fallback, and what counts as real browser control.
+
+When testing live CSS or JavaScript changes, use the existing agent-controlled
+Chromium instance from `chromium-agent`. If chrome-devtools MCP is unavailable,
+use direct CDP fallback rather than launching a separate browser.
 
 This skill is for:
 
@@ -97,8 +101,8 @@ Useful checks include:
 - `getBoundingClientRect()` for width, left, top, and height
 - `getComputedStyle()` for display, flex, grid, margin, max-width, and
   background sizing
-- checking whether multiple cards share the same `top` value to confirm they
-  are on one row
+- checking whether multiple cards share the same `top` value to confirm they are
+  on one row
 
 ## JavaScript testing guidance
 

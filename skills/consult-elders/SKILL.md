@@ -1,33 +1,32 @@
 ---
 name: consult-elders
-description: Ask Claude, ChatGPT, Copilot, and Perplexity the same question through their logged-in browser sessions using chrome-devtools MCP, wait for answers, then synthesize a combined answer.
+description: Ask Claude, ChatGPT, Copilot, Perplexity, and Gemini the same question through their logged-in browser sessions using chrome-devtools MCP, wait for answers, then synthesize a combined answer.
 ---
 
 # Skill: Consult Elders
 
-Use this skill when the user asks to "consult the elders", ask multiple web assistants, get external opinions, compare model answers, or synthesize answers from Claude, ChatGPT, Copilot, and Perplexity.
+Use this skill when the user asks to "consult the elders", ask multiple web assistants, get external opinions, compare model answers, or synthesize answers from Claude, ChatGPT, Copilot, Perplexity, and Gemini.
 
 ## Goal
 
-Ask the same user question to:
+Ask the same user question to all available elders simultaneously and return a synthesized answer. The goal is to get answers from every provider, but the workflow is best-effort: a failed session, service outage, CAPTCHA, login failure, or offline site for one elder does not block the rest. Each elder has an independent status:
+
+- **answered**: response received and extracted
+- **skipped**: user chose to skip or no logged-in session available
+- **failed**: error occurred before or after submission (with reason noted)
+- **pending**: timeout reached but partial content may exist
+
+Providers:
 
 - Claude, inside the Claude `opencode` project
 - ChatGPT, inside the ChatGPT `opencode` project
 - Copilot, in a new/global Copilot chat with Think deeper enabled
 - Perplexity, from the main Perplexity home/search page
-
-Then wait for all available responses and return a synthesized answer that separates:
-
-- what Claude said
-- what ChatGPT said
-- what Copilot said
-- what Perplexity said
-- agreement / disagreement
-- combined recommendation
+- Gemini, at `https://gemini.google.com/app` (logged-in session)
 
 ## Browser control
 
-Use chrome-devtools MCP tools as the primary control path for all four providers. Work from the latest snapshot and use UID values from that snapshot.
+Use chrome-devtools MCP tools as the primary control path for all providers. Work from the latest snapshot and use UID values from that snapshot.
 
 - Use `chrome-devtools_list_pages`, `chrome-devtools_select_page`, `chrome-devtools_new_page`, `chrome-devtools_navigate_page` for tab/page setup.
 - Use `chrome-devtools_take_snapshot` for DOM/accessibility inspection.
@@ -42,10 +41,12 @@ Use chrome-devtools MCP tools as the primary control path for all four providers
 - Use the user's existing logged-in browser sessions.
 - Do not send secrets, credentials, private keys, tokens, client-private data, or sensitive personal/financial information unless the user explicitly approves that exact prompt.
 - Ask all sites the same prompt, typed directly as the user. Do **not** prepend disclosure text like "I am using you as a second-opinion assistant".
-- Keep Claude and ChatGPT inside their respective `opencode` projects. Copilot and Perplexity do not need project scoping.
+- Keep Claude and ChatGPT inside their respective `opencode` projects. Copilot, Perplexity, and Gemini do not need project scoping.
 - Do not decide project membership from URL alone. Verify visible project context.
-- If any site is logged out, blocked by CAPTCHA, or requires human verification, report which site is blocked.
-- If one elder fails and others succeed, return the successful answers plus the failure reason.
+- If any site is logged out, blocked by CAPTCHA, or requires human verification, record the failure reason and continue with other elders.
+- Never let one bad session block the rest. If an elder fails before submission, record the reason and move on. If an elder fails after submission or times out, record the reason and use any partial answer only if it is clearly available.
+- Do not spend more than a reasonable per-provider budget trying to repair one site; move on after a few attempts.
+- If all fail, report all failure reasons and ask whether to retry later.
 
 ## Related skills
 
@@ -55,6 +56,7 @@ This skill combines the operational rules from:
 - `chatgpt-browser`
 - `copilot-browser`
 - `perplexity-browser`
+- `gemini-browser`
 
 When in doubt about a site-specific detail, follow that site's dedicated skill.
 
@@ -189,6 +191,34 @@ Perplexity red flags:
 - getting distracted by `Computer` / task Space UI
 - repeated Enter or keypress attempts
 
+## Gemini flow
+
+Preferred entry:
+
+1. Navigate to `https://gemini.google.com/app` (no trailing slash).
+2. Verify logged-in state; a logged-in session shows the user's account or avatar.
+3. Select mode before submitting:
+   - Default/available mode is `Fast`.
+   - If `Pro` is available, prefer it.
+   - If `Pro` quota is unavailable or exhausted, fall back to `Thinking` mode.
+   - If neither `Pro` nor `Thinking` can be verified as available, mark Gemini as failed/skipped unless the user explicitly approves the current mode.
+4. Type the prompt with `chrome-devtools_fill` using the textbox UID.
+5. Submit with `chrome-devtools_click` using the submit button UID.
+6. After submission, if an `Answer now` confirmation prompt appears, confirm with `chrome-devtools_click` using its UID.
+7. Wait until Gemini finishes streaming.
+
+Extraction guard:
+
+- After copying, validate that the clipboard content does not look like a URL or noisy page artifact.
+- If the copy returns only a URL or clearly noisy content, try `chrome-devtools_evaluate_script` to read the answer directly from the DOM instead.
+
+Gemini red flags:
+
+- using the Gemini app URL with a trailing slash; use `https://gemini.google.com/app` exactly
+- unable to verify Pro or Thinking mode availability
+- copy returning a URL instead of the answer
+- `Answer now` button not confirmed after submission
+
 ## Waiting for answers
 
 After submitting to each site, wait and poll periodically by taking snapshots:
@@ -235,26 +265,19 @@ xclip -selection clipboard -o
 xsel -b
 ```
 
-If clipboard extraction is unavailable, use `chrome-devtools_take_snapshot` and `chrome-devtools_evaluate_script` to read page content, then extract the latest assistant answer after the submitted prompt. Avoid returning noisy full-page text.
+If clipboard extraction is unavailable or returns noisy content (see Gemini flow), use `chrome-devtools_take_snapshot` and `chrome-devtools_evaluate_script` to read page content, then extract the latest assistant answer after the submitted prompt. Avoid returning noisy full-page text.
 
 ## Synthesis format
 
-Return a compact synthesis, not two raw transcripts.
-
-Use this structure:
+Return a compact synthesis, not raw transcripts. Only include per-provider summaries for successful answers. Failed or skipped providers are documented under Notes / failures.
 
 ```
-Claude said:
-- <key points>
-
-ChatGPT said:
-- <key points>
-
-Copilot said:
-- <key points>
-
-Perplexity said:
-- <key points, including important source names if useful>
+Answered:
+- Claude: <key points>
+- ChatGPT: <key points>
+- Copilot: <key points>
+- Perplexity: <key points, including important source names if useful>
+- Gemini: <key points>
 
 Agreement:
 - <where they align>
@@ -262,28 +285,46 @@ Agreement:
 Differences:
 - <where they disagree or emphasize different things>
 
-Combined answer:
-<your concise synthesized answer>
+Group wisdom / combined answer:
+<your concise synthesized answer from the successful answers>
 
-Notes / risks:
-- <blocked site, uncertainty, outdated info risk, or skipped verification>
+Notes / failures:
+- <provider>: <reason> (failed before submission / failed after submission / timeout / skipped)
+- <provider>: <reason>
 ```
 
 If the user asked for only the final result, keep individual elder sections very short and put most value in `Combined answer`.
 
 ## Failure handling
 
-If one elder fails but others succeed:
+Each elder is independent. Record status for every provider:
+
+- **Failed before submission**: login issue, CAPTCHA, navigation error, etc. — record reason, continue with others.
+- **Failed after submission or timeout**: response error or no response after budget. Use any partial answer only if clearly available.
+- **Skipped**: user requested skip or no logged-in session.
+
+If some elders succeed:
 
 ```
-<Successful elders> answered, but <failed elder> could not be consulted: <reason>.
+Answered: Claude, ChatGPT, Perplexity
+Failed: Copilot (CAPTCHA block), Gemini (Pro quota exhausted)
 
-<Successful elder summaries>:
+<Successful elder summaries>
 
 My synthesis:
 ...
 ```
 
-If multiple elders fail, report each failure reason and synthesize from the successful answers.
+If all elders fail:
 
-If all elders fail, report all failure reasons and ask whether to retry after the user fixes login/verification/browser state.
+```
+All elders failed:
+
+- Claude: <reason>
+- ChatGPT: <reason>
+- Copilot: <reason>
+- Perplexity: <reason>
+- Gemini: <reason>
+
+Would you like to retry later after fixing login/verification/browser state?
+```
