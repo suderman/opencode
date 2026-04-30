@@ -89,6 +89,6 @@ to get the binary.
 ## Current models reference
 
 - `minimax-coding-plan/MiniMax-M2.7`
-- `openai/gpt-5.5`
+- `openai/gpt-5.4`
 - `opencode/claude-opus-4-7`
 - `openrouter/google/gemini-3-pro-preview`
