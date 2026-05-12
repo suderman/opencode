@@ -32,6 +32,7 @@
     "messages_undo": "<leader>u",
     "messages_redo": "<leader>r",
 
-    "terminal_suspend": "ctrl+z"
+    "terminal_suspend": "ctrl+z",
+    "session_child_first": "<leader>o"
   }
 }
