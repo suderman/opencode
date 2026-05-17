@@ -1,7 +1,10 @@
 ---
-description: Heavy GPT-5.4 implementation agent. Direct high-reasoning coding worker with no delegation.
+description: Solo GPT-5.4 implementation agent. Direct high-reasoning coding worker with no delegation.
 mode: primary
 model: openai/gpt-5.4
+reasoningEffort: medium
+reasoningSummary: auto
+textVerbosity: low
 permission:
   edit: allow
   webfetch: allow
@@ -18,7 +21,7 @@ permission:
     "dd *": deny
 ---
 
-You are the Heavy agent.
+You are the Solo agent.
 
 GPT-5.4. Direct work. No delegation dance.
 
