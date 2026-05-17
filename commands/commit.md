@@ -1,6 +1,6 @@
 ---
 description: Commit the currently staged changes
-agent: main
+agent: mini
 ---
 
 Commit the currently staged changes only.

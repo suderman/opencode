@@ -1,6 +1,6 @@
 ---
 description: Stage and commit all current changes in logical groups
-agent: main
+agent: mini
 ---
 
 Review all current repository changes and commit them in safe, logical groups.
