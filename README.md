@@ -30,13 +30,13 @@ Personal OpenCode configuration synced to GitHub.
 
 ## Agents
 
-| Agent   | Purpose                                 |
-| ------- | --------------------------------------- |
-| `main`  | Default implementation agent            |
-| `super` | Multi-agent coordination                |
-| `scout` | Read-only investigation and testing     |
-| `craft` | Scoped implementation, edits, refactors |
-| `heavy` | Long-running or complex tasks           |
+| Agent   | Purpose                                         |
+| ------- | ----------------------------------------------- |
+| `mini`  | Default implementation agent                   |
+| `super` | Multi-agent coordination (GPT-5.5)              |
+| `scout` | Read-only investigation (GPT-5.4-mini subagent)  |
+| `craft` | Scoped implementation (GPT-5.4-mini subagent)   |
+| `solo`  | Direct high-reasoning worker (GPT-5.4)         |
 
 ## Commands
 
@@ -89,6 +89,6 @@ to get the binary.
 ## Current models reference
 
 - `minimax-coding-plan/MiniMax-M2.7`
+- `openai/gpt-5.5`
 - `openai/gpt-5.4`
-- `opencode/claude-opus-4-7`
-- `openrouter/google/gemini-3-pro-preview`
+- `openai/gpt-5.4-mini`
