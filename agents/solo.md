@@ -11,6 +11,8 @@ permission:
   bash:
     "*": allow
     "git push*": ask
+    "git add*": allow
+    "git reset*": allow
     "git commit*": allow
     "git tag*": ask
     "rm -rf*": deny

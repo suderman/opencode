@@ -8,7 +8,7 @@ reasoningSummary: auto
 textVerbosity: low
 permission:
   edit: allow
-  webfetch: ask
+  webfetch: allow
   task:
     "*": deny
   bash:
