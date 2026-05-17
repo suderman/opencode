@@ -32,11 +32,11 @@ Personal OpenCode configuration synced to GitHub.
 
 | Agent   | Purpose                                         |
 | ------- | ----------------------------------------------- |
-| `mini`  | Default implementation agent                   |
-| `super` | Multi-agent coordination (GPT-5.5)              |
-| `scout` | Read-only investigation (GPT-5.4-mini subagent)  |
+| `mini`  | Default implementation agent (MiniMax-M2.7)     |
+| `super` | Multi-agent coordination (GPT-5.5 low)          |
+| `scout` | Read-only investigation (GPT-5.4-mini subagent) |
 | `craft` | Scoped implementation (GPT-5.4-mini subagent)   |
-| `solo`  | Direct high-reasoning worker (GPT-5.4)         |
+| `solo`  | Direct high-reasoning worker (GPT-5.4 medium)   |
 
 ## Commands
 
