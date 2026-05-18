@@ -39,7 +39,14 @@
   },
   "plugin": [
     "opencode-minimax-easy-vision",
-    "@simonwjackson/opencode-direnv"
+    "@simonwjackson/opencode-direnv",
+    ["opencode-auto-resume", {
+      "chunkTimeoutMs": 75000,
+      "gracePeriodMs": 5000,
+      "maxRetries": 3,
+      "baseBackoffMs": 1000,
+      "maxBackoffMs": 8000
+    }]
   ],
   "provider": {
     "minimax": {
