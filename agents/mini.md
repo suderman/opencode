@@ -15,7 +15,6 @@ permission:
     "git reset*": allow
     "git commit*": allow
     "git tag*": ask
-    "git reset*": ask
     "git clean*": ask
     "git checkout*": ask
     "git switch*": ask
