@@ -5,11 +5,12 @@ Personal OpenCode configuration synced to GitHub.
 ## Structure
 
 - `opencode.json` - Main config: providers, permissions, plugins, MCP tools
-- `opencode-minimax-easy-vision.json` - MiniMax vision plugin config
 - `tui.json` + `themes/custom.json` - Catppuccin Mocha-inspired TUI theme
 - `AGENTS.md` - Engineering conventions and agent rules
-- `agents/` - Custom agent definitions (review agent with restricted tools)
-- `commands/` - Slash commands (`/commit`)
+- `dcp.jsonc` - Dynamic Context Pruning plugin settings
+- `notification-ntfy.json` - ntfy.sh notification plugin settings
+- `agents/` - Custom agent definitions (`mini`, `super`, `solo`, `scout`, `craft`)
+- `commands/` - Slash commands (`/commit`, `/commitall`)
 - `skills/` - Specialized workflows
 
 ## Skills
@@ -27,6 +28,7 @@ Personal OpenCode configuration synced to GitHub.
 | `gemini-browser`         | Ask Gemini through browser                 |
 | `perplexity-browser`     | Ask Perplexity through browser             |
 | `consult-elders`         | Ask all AI assistants simultaneously       |
+| `wordpress-master`       | WordPress theme, plugin, and block work     |
 
 ## Agents
 
@@ -40,9 +42,12 @@ Personal OpenCode configuration synced to GitHub.
 
 ## Commands
 
-| Command   | Purpose                |
-| --------- | ---------------------- |
-| `/commit` | Guided commit workflow |
+| Command      | Purpose                  |
+| ------------ | ------------------------ |
+| `/commit`    | Guided commit workflow   |
+| `/commitall` | Commit everything in one |
+
+## MCP
 
 - `MiniMax` - Local MCP server via `uvx`
 - `chrome-devtools` - Browser debugging at `localhost:9222`
@@ -73,8 +78,9 @@ npm i && npm run build && npm start https://mcp.figma.com/mcp
 
 ## Plugins
 
-- `opencode-minimax-easy-vision` - Vision support
+- `opencode-ntfy.sh` - Push session notifications via ntfy.sh
 - `@simonwjackson/opencode-direnv` - Direnv integration
+- `@tarquinen/opencode-dcp@latest` - Dynamic context pruning
 
 ## Setup
 
