@@ -3,7 +3,7 @@
   "autoshare": false,
   "autoupdate": true,
   "lsp": true,
-  "model": "minimax-coding-plan/MiniMax-M2.7",
+  "model": "minimax-coding-plan/MiniMax-M3",
   "small_model": "minimax-coding-plan/MiniMax-M2.7",
   "default_agent": "mini",
   "agent": {
@@ -15,7 +15,7 @@
     }
   },
   "permission": {
-    "MiniMax_*": "deny",
+    "MiniMax_understand_image": "deny",
     "external_directory": {
       "/nix/store/**": "allow",
       "/tmp/**": "allow"
@@ -40,7 +40,6 @@
   },
   "plugin": [
     "opencode-ntfy.sh",
-    "opencode-minimax-easy-vision",
     "@simonwjackson/opencode-direnv",
     "@tarquinen/opencode-dcp@latest"
   ],
@@ -60,9 +59,8 @@
           "name": "GPT-5.5",
           "reasoning": true,
           "options": {
-            "reasoningEffort": "low",
-            "reasoningSummary": "auto",
-            "textVerbosity": "low"
+            "reasoningEffort": "medium",
+            "reasoningSummary": "auto"
           }
         },
         "gpt-5.4": {
@@ -70,8 +68,7 @@
           "reasoning": true,
           "options": {
             "reasoningEffort": "medium",
-            "reasoningSummary": "auto",
-            "textVerbosity": "low"
+            "reasoningSummary": "auto"
           }
         },
         "gpt-5.4-mini": {

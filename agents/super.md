@@ -2,7 +2,7 @@
 description: GPT-5.5 orchestration agent for complex coding tasks. Uses Scout for investigation and Craft for implementation.
 mode: primary
 model: openai/gpt-5.5
-reasoningEffort: low
+reasoningEffort: medium
 reasoningSummary: auto
 textVerbosity: low
 permission:
