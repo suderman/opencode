@@ -11,12 +11,12 @@
     "title": {
       "session.idle": { "value": "{project}: Agent Idle" },
       "session.error": { "value": "{project}: Agent Error" },
-      "permission.asked": { "value": "{project}: Permission Requested" }
+      "permission.asked": { "value": "{project}: Agent Blocked" }
     },
     "message": {
       "session.idle": { "value": "Ready for next prompt." },
       "session.error": { "value": "{error}" },
-      "permission.asked": { "command": "echo Permission {permission_type} requested" }
+      "permission.asked": { "value": "Permission {permission_type} requested" }
     },
     "icon": {
       "mode": "dark"
