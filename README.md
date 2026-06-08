@@ -9,7 +9,7 @@ Personal OpenCode configuration synced to GitHub.
 - `AGENTS.md` - Engineering conventions and agent rules
 - `dcp.jsonc` - Dynamic Context Pruning plugin settings
 - `notification-ntfy.json` - ntfy.sh notification plugin settings
-- `agents/` - Custom agent definitions (`mini`, `super`, `solo`, `scout`, `craft`)
+- `agents/` - Custom agent definitions (`mini`)
 - `commands/` - Slash commands (`/commit`, `/commitall`)
 - `skills/` - Specialized workflows
 
@@ -32,13 +32,11 @@ Personal OpenCode configuration synced to GitHub.
 
 ## Agents
 
-| Agent   | Purpose                                         |
-| ------- | ----------------------------------------------- |
-| `mini`  | Default implementation agent (MiniMax-M3)     |
-| `super` | Multi-agent coordination (GPT-5.5 medium)          |
-| `scout` | Read-only investigation (GPT-5.4-mini subagent) |
-| `craft` | Scoped implementation (GPT-5.4-mini subagent)   |
-| `solo`  | Direct high-reasoning worker (GPT-5.5 medium)   |
+| Agent   | Purpose                                           |
+| ------- | ------------------------------------------------- |
+| `mini`  | Default custom implementation agent (MiniMax-M3) |
+| `build` | Native build agent (GPT-5.5)                      |
+| `plan`  | Native plan agent (GPT-5.5)                       |
 
 ## Commands
 
