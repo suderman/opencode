@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@opencode-ai/plugin": "1.4.6",
-    "opencode-ai": "^1.18.0",
+    "opencode-ai": "^1.18.1",
     "opencode-minimax-easy-vision": "^1.4.0"
   }
 }
