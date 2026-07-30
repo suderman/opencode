@@ -119,7 +119,7 @@
     "MiniMax": {
       "enabled": true,
       "type": "local",
-      "command": ["uvx", "minimax-coding-plan-mcp"],
+      "command": ["uvx", "--with", "mcp<2", "minimax-coding-plan-mcp", "-y"],
       "environment": {
         "MINIMAX_API_KEY": "{env:MINIMAX_API_KEY}",
         "MINIMAX_API_HOST": "https://api.minimax.io"
