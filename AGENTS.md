@@ -88,6 +88,27 @@ for.
 
 ---
 
+## Project task tracking
+
+For substantive repository work, check whether the repository maps to an
+existing Org project under `~/org/work/`.
+
+- When an existing project is available, load the `project-org-tasks` skill and
+  use its Org project file as the persistent task and progress record.
+- Prefer the existing Org task thread over creating a separate plan, TODO file,
+  checklist document, or repository-local work log.
+- Resume a matching existing task when possible rather than creating a duplicate.
+- Keep the Org task synchronized as meaningful work progresses and before the
+  final report.
+- Do not create a new Org project merely because work is happening in a
+  repository. If no project mapping exists, continue normally unless the user
+  asks to establish one.
+- Do not treat repository-local `work/`, TODO, or planning files as substitutes
+  for the Org project system unless the repository explicitly defines them as
+  part of its own workflow.
+
+---
+
 ## Change discipline
 
 - Prefer minimal diffs over broad rewrites.
