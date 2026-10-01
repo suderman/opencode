@@ -2,6 +2,8 @@
 
 Personal OpenCode configuration synced to GitHub.
 
+*Archived due to consolidated [suderman/agents](https://github.com/suderman/agents) repo.*
+
 ## Structure
 
 - `opencode.json` - Main config: providers, permissions, plugins, MCP tools
